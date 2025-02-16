@@ -4,33 +4,30 @@ import data from './data.json';
 
 export const App = () => {
 	const [activeIndex, setActiveIndex] = useState(0);
-	const [steps, setSteps] = useState(data);
-
-	const isFirstStep = activeIndex === 0;
-	const isLastStep = activeIndex === steps.length - 1;
 
 	const onClickForward = () => {
-		if (!isLastStep) {
-			setActiveIndex(prev => prev + 1);
-		}
+		setActiveIndex(prev => prev + 1);
 	};
 
 	const onClickBack = () => {
-		if (!isFirstStep) {
-			setActiveIndex(prev => prev - 1);
-		}
+		setActiveIndex(prev => prev - 1);
 	};
 
-	const onClickStartAgain = () => {
+	const onClickStart = () => {
 		setActiveIndex(0);
 	};
 
-	const onClickActive = event => {
-		const index = Number(event.target.textContent) - 1;
-		setActiveIndex(index);
+	const onClickStep = ({ target }) => {
+		const stepIndex = Number(target.textContent) - 1;
+		if (!isNaN(stepIndex)) {
+			setActiveIndex(stepIndex);
+		}
 	};
 
-	const stepsItem = steps.map(({ id, title }, idx) => {
+	const isStartIndex = activeIndex === 0;
+	const isFinishIndex = activeIndex === data.length - 1;
+
+	const stepsData = data.map(({ id, title }, idx) => {
 		const isActive = idx === activeIndex;
 		const isDone = idx < activeIndex;
 		return (
@@ -38,10 +35,9 @@ export const App = () => {
 				className={`${styles['steps-item']} ${isActive ? styles.active : ''} ${
 					isDone ? styles.done : ''
 				}`}
+				onClick={onClickStep}
 				key={id}>
-				<button className={styles['steps-item-button']} onClick={onClickActive}>
-					{idx + 1}
-				</button>
+				<button className={styles['steps-item-button']}>{idx + 1}</button>
 				{title}
 			</li>
 		);
@@ -53,25 +49,21 @@ export const App = () => {
 				<h1>Инструкция по готовке пельменей</h1>
 				<div className={styles.steps}>
 					<div className={styles['steps-content']}>
-						{steps[activeIndex].content}
+						{data[activeIndex].content}
 					</div>
-					<ul className={styles['steps-list']}>{stepsItem}</ul>
+					<ul className={styles['steps-list']}>{stepsData}</ul>
 					<div className={styles['buttons-container']}>
 						<button
 							className={styles.button}
 							onClick={onClickBack}
-							disabled={isFirstStep}>
+							disabled={isStartIndex}>
 							Назад
 						</button>
-						{isLastStep ? (
-							<button className={styles.button} onClick={onClickStartAgain}>
-								Начать сначала
-							</button>
-						) : (
-							<button className={styles.button} onClick={onClickForward}>
-								Далее
-							</button>
-						)}
+						<button
+							className={styles.button}
+							onClick={isFinishIndex ? onClickStart : onClickForward}>
+							{isFinishIndex ? 'Начать сначала' : 'Далее'}
+						</button>
 					</div>
 				</div>
 			</div>
