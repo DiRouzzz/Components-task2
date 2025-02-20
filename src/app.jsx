@@ -17,11 +17,8 @@ export const App = () => {
 		setActiveIndex(0);
 	};
 
-	const onClickStep = ({ target }) => {
-		const stepIndex = Number(target.textContent) - 1;
-		if (!isNaN(stepIndex)) {
-			setActiveIndex(stepIndex);
-		}
+	const onClickStep = (stepIndex) => {
+		setActiveIndex(stepIndex);
 	};
 
 	const isStartIndex = activeIndex === 0;
@@ -35,7 +32,7 @@ export const App = () => {
 				className={`${styles['steps-item']} ${isActive ? styles.active : ''} ${
 					isDone ? styles.done : ''
 				}`}
-				onClick={onClickStep}
+				onClick={() => onClickStep(idx)}
 				key={id}>
 				<button className={styles['steps-item-button']}>{idx + 1}</button>
 				{title}
